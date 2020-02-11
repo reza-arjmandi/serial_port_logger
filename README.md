@@ -10,8 +10,8 @@ You can run serial_port_logger like this:
 serial_port_logger --CONFIG_FILE=config.json
 ```
 
-And in the `config.json` file you can add multiple serial devices.
-Example of `config.json`:
+And in the `config.json` file you can add multiple serial devices.  
+Example:
 
 ```json
 {
