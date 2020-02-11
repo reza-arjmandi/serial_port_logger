@@ -1,6 +1,7 @@
 # serial_port_logger
 
-serial_port_logger is a single threaded console application that can log multiple serial port devices simultaneously.  
+serial_port_logger is a smart single threaded console application that can log multiple serial port devices simultaneously.  
+It's smart because if one of serial devices disconnect while it's running, or one of serial devices is not available when it run, it automatically reconnect to serial device after 10 seconds.  
 It's can be compiled for windows, linux, mac and raspberry pi.  
 Also you can download DEB packages for linux and raspberry pi in the [packages directory](packages).
 
