@@ -1,0 +1,23 @@
+{
+    "env": {
+        "myDefaultIncludePath": [
+            "${workspaceFolder}/include/**",
+            "/home/rarjmandi/.local/3rdparty/include/**"
+        ],
+        "myCompilerPath": "/usr/bin/gcc"
+    },
+    "configurations": [
+        {
+            "name": "Linux",
+            "intelliSenseMode": "gcc-x64",
+            "includePath": [
+                "${myDefaultIncludePath}"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "compileCommands": "build/compile_commands.json"
+        }
+    ],
+    "version": 4
+}

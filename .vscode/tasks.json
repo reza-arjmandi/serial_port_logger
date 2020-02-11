@@ -1,0 +1,40 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+
+            
+    "inputs": [
+        {
+          "id": "rpiIP",
+          "type": "promptString",
+          "default": "192.168.0.4",
+          "description": "IP address of raspberry pi"
+        }
+      ],
+    "tasks": [
+        {
+            "label": "generate_deb_package",
+            "type": "shell",
+            "command" : "cmake --build /home/rarjmandi/logger/build --config Release --target package"
+        },
+        {
+            "label": "copy_deb_package_to_rpi",
+            "type": "shell",
+            "dependsOn":["generate_deb_package"],
+            "command" : "scp /home/rarjmandi/logger/build/gps_compass_logger-rpi3-0.1.1-Linux.deb pi@${input:rpiIP}:~"
+        },
+        {
+            "label": "install_deb_package_on_rpi",
+            "type": "shell",
+            "dependsOn":["copy_deb_package_to_rpi"],
+            "command" : "ssh pi@${input:rpiIP} sudo dpkg -i gps_compass_logger-rpi3-0.1.1-Linux.deb"
+        },
+        {
+            "label": "run_tests_on_rpi",
+            "type": "shell",
+            "dependsOn":["install_deb_package_on_rpi"],
+            "command":  "ssh pi@${input:rpiIP} unit_tests && ssh pi@${input:rpiIP} integration_tests && ssh pi@${input:rpiIP} acceptance_tests && ssh pi@${input:rpiIP} sudo dpkg -r gps_compass_logger-rpi3"
+        }
+    ]
+}
