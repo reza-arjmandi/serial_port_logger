@@ -19,20 +19,19 @@ find_or_get(Boost
 
 set(_include_dirs 
     ${INCLUDE_DIRS}
-    ${PROJECT_BINARY_DIR}
     ${GMOCK_INCLUDE_DIRS})
 
-set(acceptance_tests_cpp_files 
+set(serial_port_logger_acceptance_tests_cpp_files 
     main.cpp
     serial_port_logger_tests.cpp)
-add_executable(acceptance_tests ${acceptance_tests_cpp_files})
-target_include_directories(acceptance_tests 
+add_executable(serial_port_logger_acceptance_tests ${serial_port_logger_acceptance_tests_cpp_files})
+target_include_directories(serial_port_logger_acceptance_tests 
     PUBLIC 
     ${_include_dirs}
     ${GMOCK_INCLUDE_DIRS} 
     ${PROJECT_BINARY_DIR}/acceptance_tests)
-target_precompile_headers(acceptance_tests PUBLIC pch.h)
-target_link_libraries(acceptance_tests 
+target_precompile_headers(serial_port_logger_acceptance_tests PUBLIC pch.h)
+target_link_libraries(serial_port_logger_acceptance_tests 
     Threads::Threads
     Boost::system
     Boost::date_time
@@ -40,13 +39,13 @@ target_link_libraries(acceptance_tests
     stdc++fs
     ${GMOCK_BOTH_LIBRARIES}
     ${GTEST_BOTH_LIBRARIES})
-set_property(TARGET acceptance_tests PROPERTY CXX_STANDARD 17)
+set_property(TARGET serial_port_logger_acceptance_tests PROPERTY CXX_STANDARD 17)
 
 if(UNIX)
     get_target_property(BOOST_DATE_TIME_LIB Boost::date_time LOCATION)
     get_target_property(BOOST_FILE_SYSTEM_LIB Boost::filesystem LOCATION)
     include(GNUInstallDirs)
-    install(TARGETS acceptance_tests TYPE RUNTIME)
+    install(TARGETS serial_port_logger_acceptance_tests TYPE RUNTIME)
     install(FILES 
         ${BOOST_DATE_TIME_LIB} 
         ${BOOST_FILE_SYSTEM_LIB} 

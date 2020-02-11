@@ -39,7 +39,6 @@ private:
              fs::path(_process_name)).string() 
             + std::string {" --CONFIG_FILE="}
             + Command_line_options.config_file.string()};
-        std::cout << command << std::endl;
         return command;
     }
 

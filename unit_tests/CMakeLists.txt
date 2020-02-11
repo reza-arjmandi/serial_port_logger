@@ -10,21 +10,21 @@ set(cpp_files
     Serial_port_session_tests.cpp
     Async_procrastinator_tests.cpp)
 
-add_executable(unit_tests ${cpp_files})
-target_include_directories(unit_tests PUBLIC
+add_executable(serial_port_logger_unit_tests ${cpp_files})
+target_include_directories(serial_port_logger_unit_tests PUBLIC
                             ${INCLUDE_DIRS}
                             ${GMOCK_INCLUDE_DIRS})
-target_precompile_headers(unit_tests PUBLIC pch.h)
-target_link_libraries(unit_tests 
+target_precompile_headers(serial_port_logger_unit_tests PUBLIC pch.h)
+target_link_libraries(serial_port_logger_unit_tests 
     async_io
     Threads::Threads
     stdc++fs
     ${GMOCK_BOTH_LIBRARIES}
     ${GTEST_BOTH_LIBRARIES})
-set_property(TARGET unit_tests PROPERTY CXX_STANDARD 17)
+set_property(TARGET serial_port_logger_unit_tests PROPERTY CXX_STANDARD 17)
 
 if(UNIX)
     include(GNUInstallDirs)
-    install(TARGETS unit_tests 
+    install(TARGETS serial_port_logger_unit_tests 
         TYPE RUNTIME)
 endif()

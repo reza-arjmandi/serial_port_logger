@@ -17,7 +17,7 @@ if(CROSS_COMPILE_FOR_RPI)
     set(CMAKE_SYSTEM_PROCESSOR arm)
 
     set(cross_compile_toolchain_path 
-        /home/rarjmandi/.local/x-tools/armv8-rpi3-linux-gnueabihf)
+        $ENV{HOME}/.local/x-tools/armv8-rpi3-linux-gnueabihf)
     set(CMAKE_SYSROOT 
         ${cross_compile_toolchain_path}/armv8-rpi3-linux-gnueabihf/sysroot)
     set(CMAKE_C_COMPILER
@@ -38,18 +38,20 @@ add_subdirectory(acceptance_tests)
 add_subdirectory(integration_tests)
 
 if(CROSS_COMPILE_FOR_RPI)
-    set(CPACK_PACKAGE_NAME "gps_compass_logger-rpi3")
+    set(CPACK_PACKAGE_NAME "serial_port_logger-rpi3")
     set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "armhf")
 else()
-    set(CPACK_PACKAGE_NAME "gps_compass_logger")
+    set(CPACK_PACKAGE_NAME "serial_port_logger")
 endif()
 
-set(CPACK_PACKAGE_DESCRIPTION "log Compass and GPS modules.")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "log Compass and GPS modules.")
+set(CPACK_PACKAGE_DESCRIPTION "serial_port_logger is a single threaded console\
+ application that can log multiple serial port devices simultaneously.")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "It can log multiple serial port\
+ devices.")
 
 if(UNIX)
     set(CPACK_GENERATOR "DEB")
-    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "arjmandi")
+    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Reza Arjmandi")
 endif()
 
 include(CPack)
