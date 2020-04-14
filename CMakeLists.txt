@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(logger)
-
+enable_testing()
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 set(INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
 set(CXX_STANDARD_REQUIRED ON)
