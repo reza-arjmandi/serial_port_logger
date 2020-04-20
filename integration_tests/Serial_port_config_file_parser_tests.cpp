@@ -152,7 +152,8 @@ public:
             _serial_port_options_matcher;
     Serial_port_config_file_parser _parser;
     boost::property_tree::ptree _container;
-    fs::path _config_file {"config.json"};
+    Random_generator _random_generator;
+    fs::path _config_file {_random_generator.generate_string(10)};
     Random_serial_port_config_generator _config_generator;
     FS_utils _FS_utils;
 

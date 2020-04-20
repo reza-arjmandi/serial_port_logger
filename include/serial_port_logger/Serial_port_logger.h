@@ -1,39 +1,14 @@
 #pragma once
 
 #include "serial_port_logger/Serial_port_logger_dependency_injector.h"
-
-class Data_ostream {
-
-public:
-
-    Data_ostream(const fs::path& path)
-        : _path{path}
-    {
-    }
-
-    ~Data_ostream()
-    {
-
-    }
-
-    Data_ostream& operator<<(const std::string& data)
-    {
-        std::ofstream {_path, std::ios::app} << data;
-        return *this;
-    }
-
-private:
-
-    fs::path _path;
-
-};
+#include "serial_port_logger/File_ostream.h"
 
 class Serial_port_logger {
 
 public:
 
     using Session_type = Serial_port_session<
-        Data_ostream, 
+        File_ostream, 
         Serial_port_logger_dependency_injector::Async_IO_read_utils_type, 
         Serial_port_logger,
         Serial_port_logger_dependency_injector::Serial_port_type>;
@@ -98,7 +73,7 @@ private:
     Serial_port_logger_dependency_injector& _dependency_injector;
     Async_procrastinator_type& _async_procrastinator;
     Serial_port_config _serial_port_config;
-    Data_ostream _log_file;
+    File_ostream _log_file;
     Session_factory_type _session_factory;
     Serial_port_connection_type _serial_port_connection; 
     Seconds_type _timer_duration {10};
