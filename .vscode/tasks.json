@@ -3,38 +3,83 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
 
-            
     "inputs": [
         {
-          "id": "rpiIP",
+          "id": "RPI_IP",
           "type": "promptString",
           "default": "192.168.0.4",
           "description": "IP address of raspberry pi"
-        }
+        },
+        {
+            "id": "PKG_name",
+            "type": "promptString",
+            "default": "serial_port_logger-rpi3-0.1.1-Linux.deb",
+            "description": "serial_port_logger package name"
+        },
       ],
     "tasks": [
         {
-            "label": "generate_deb_package",
+            "label": "__generate_deb_package",
             "type": "shell",
-            "command" : "cmake --build /home/rarjmandi/logger/build --config Release --target package"
+            "command" : "/snap/bin/cmake --build ${workspaceFolder}/build --config Release --target package"
         },
         {
-            "label": "copy_deb_package_to_rpi",
+            "label": "__copy_deb_package_file_to_rpi",
             "type": "shell",
-            "dependsOn":["generate_deb_package"],
-            "command" : "scp /home/rarjmandi/logger/build/gps_compass_logger-rpi3-0.1.1-Linux.deb pi@${input:rpiIP}:~"
+            "command" : "scp ${workspaceFolder}/build/${input:PKG_name} pi@${input:RPI_IP}:~"
         },
         {
-            "label": "install_deb_package_on_rpi",
+            "label": "__install_deb_package_on_rpi",
             "type": "shell",
-            "dependsOn":["copy_deb_package_to_rpi"],
-            "command" : "ssh pi@${input:rpiIP} sudo dpkg -i gps_compass_logger-rpi3-0.1.1-Linux.deb"
+            "command" : "ssh pi@${input:RPI_IP} sudo dpkg -i ${input:PKG_name}"
         },
         {
-            "label": "run_tests_on_rpi",
+            "label": "__run_unit_tests_on_rpi",
             "type": "shell",
-            "dependsOn":["install_deb_package_on_rpi"],
-            "command":  "ssh pi@${input:rpiIP} unit_tests && ssh pi@${input:rpiIP} integration_tests && ssh pi@${input:rpiIP} acceptance_tests && ssh pi@${input:rpiIP} sudo dpkg -r gps_compass_logger-rpi3"
-        }
+            "command" : "ssh pi@${input:RPI_IP} serial_port_logger_unit_tests"
+        },
+        {
+            "label": "__run_integration_tests_on_rpi",
+            "type": "shell",
+            "command" : "ssh pi@${input:RPI_IP} serial_port_logger_integration_tests"
+        },
+        {
+            "label": "__run_acceptance_tests_on_rpi",
+            "type": "shell",
+            "command" : "ssh pi@${input:RPI_IP} serial_port_logger_acceptance_tests"
+        },
+        {
+            "label": "__remove_deb_package_from_rpi",
+            "type": "shell",
+            "command": "ssh pi@${input:RPI_IP} sudo dpkg -r serial_port_logger-rpi3",
+        },
+        {
+            "label": "__remove_deb_package_file_from_rpi",
+            "type": "shell",
+            "command": "ssh pi@${input:RPI_IP} sudo rm -r ${input:PKG_name}",
+        },
+        {
+            "label": "__composed_tests",
+            "type": "shell",
+            "dependsOrder": "parallel",
+            "dependsOn":[
+                "__run_unit_tests_on_rpi", 
+                "__run_integration_tests_on_rpi", 
+                "__run_acceptance_tests_on_rpi"
+            ],
+        },
+        {
+            "label": "RUN_ALL_TESTS_ON_RPI",
+            "type": "shell",
+            "dependsOrder": "sequence",
+            "dependsOn":[
+                "__generate_deb_package",
+                "__copy_deb_package_file_to_rpi",
+                "__install_deb_package_on_rpi",
+                "__composed_tests",
+                "__remove_deb_package_from_rpi",
+                "__remove_deb_package_file_from_rpi"
+            ],
+        },
     ]
 }
