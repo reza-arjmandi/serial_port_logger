@@ -187,7 +187,7 @@ public:
     Random_generator _random_generator;
     fs::path _gps_report_file {"gps_report_file.txt"};
     fs::path _compass_report_file {"compass_report_file.txt"};
-    fs::path _config_file {"config.json"};
+    fs::path _config_file {_random_generator.generate_string(10)};
     Virtual_serial_port::Drivers _gps_drivers;
     Virtual_serial_port::Drivers _compass_drivers;
     std::string _gps_random_data {""};

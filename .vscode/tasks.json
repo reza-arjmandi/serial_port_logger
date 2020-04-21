@@ -81,5 +81,17 @@
                 "__remove_deb_package_file_from_rpi"
             ],
         },
+        {
+            "label": "DEPLOY_ON_RPI",
+            "type": "shell",
+            "dependsOrder": "sequence",
+            "dependsOn":[
+                "__generate_deb_package",
+                "__copy_deb_package_file_to_rpi",
+                "__install_deb_package_on_rpi",
+                "__composed_tests",
+                "__remove_deb_package_file_from_rpi"
+            ],
+        },
     ]
 }

@@ -5,18 +5,18 @@ class File_ostream {
 public:
 
     File_ostream(const fs::path& path):
-        _file {std::make_shared<std::ofstream>(path)}
+        _path {path}
     {
     }
 
     File_ostream& operator<<(const std::string& data)
     {
-        *_file << data;
+        std::ofstream {_path, std::ios::app} << data;
         return *this;
     }
 
 private:
 
-    std::shared_ptr<std::ofstream> _file;
+    fs::path _path;
 
 };
