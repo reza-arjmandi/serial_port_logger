@@ -20,6 +20,7 @@ public:
     using Seconds_type = boost::posix_time::seconds;
     using Error_code_type = boost::system::error_code;
     using Serial_port_type = boost::asio::serial_port;
+    using IO_context_type = boost::asio::io_context;
     
     Serial_port_factory_type& get_serial_port_factory()
     {

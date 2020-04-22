@@ -1,9 +1,9 @@
 #pragma once
 
-class Mock_IO_context {
+class Mock_serial_port_logger {
 
 public:
 
     MOCK_METHOD(void, stop, ());
-    
+
 };

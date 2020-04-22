@@ -26,7 +26,6 @@ public:
         const Serial_port_config& serial_port_config,
         Serial_port_logger_dependency_injector& dependency_injector)
         : _serial_port_config {serial_port_config}
-         , _dependency_injector {dependency_injector}
          , _log_file {serial_port_config.log_file}
          , _session_factory {
              dependency_injector.get_async_IO_read_utils(), _log_file, *this}
@@ -45,8 +44,11 @@ public:
         }
     }
 
-    ~Serial_port_logger()
+    void stop()
     {
+        Error_type error_code;
+        _serial_port_connection.stop(error_code);
+        _log_file.close();
     }
 
     void notify_error(const Error_type& ec)
@@ -70,7 +72,6 @@ private:
         }
     }
 
-    Serial_port_logger_dependency_injector& _dependency_injector;
     Async_procrastinator_type& _async_procrastinator;
     Serial_port_config _serial_port_config;
     File_ostream _log_file;
