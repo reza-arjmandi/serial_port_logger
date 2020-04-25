@@ -25,8 +25,7 @@ public:
     Serial_port_logger(
         const Serial_port_config& serial_port_config,
         Serial_port_logger_dependency_injector& dependency_injector)
-        : _serial_port_config {serial_port_config}
-         , _log_file {serial_port_config.log_file}
+        : _log_file {serial_port_config.log_file}
          , _session_factory {
              dependency_injector.get_async_IO_read_utils(), _log_file, *this}
          , _serial_port_connection {
@@ -73,7 +72,6 @@ private:
     }
 
     Async_procrastinator_type& _async_procrastinator;
-    Serial_port_config _serial_port_config;
     File_ostream _log_file;
     Session_factory_type _session_factory;
     Serial_port_connection_type _serial_port_connection; 
