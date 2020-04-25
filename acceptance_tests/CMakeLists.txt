@@ -51,3 +51,7 @@ if(UNIX)
         ${BOOST_FILE_SYSTEM_LIB} 
         TYPE LIB)
 endif()
+
+include(GoogleTest)
+gtest_discover_tests(serial_port_logger_acceptance_tests 
+    TEST_PREFIX ACCEPTANCE_TEST_)
