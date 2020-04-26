@@ -2,6 +2,7 @@
 
 #include "serial_port_logger/Serial_port_logger_dependency_injector.h"
 #include "serial_port_logger/File_ostream.h"
+#include "serial_port_logger/Log_type.h"
 
 class Serial_port_logger {
 
@@ -23,6 +24,7 @@ public:
         Serial_port_logger_dependency_injector::Async_procrastinator_type;
 
     Serial_port_logger(
+        const Log_type& log_type,
         const Serial_port_config& serial_port_config,
         Serial_port_logger_dependency_injector& dependency_injector)
         : _log_file {serial_port_config.log_file}
@@ -37,9 +39,27 @@ public:
             dependency_injector.get_async_procrastinator()}
     {
         boost::system::error_code error_code;
-        _serial_port_connection.start_async(error_code);
-        if(error_code){
-            reconnect_serial_connection();
+        if(log_type == Log_type::LOG_DATA_TO_FILE){
+            _serial_port_connection.start_async(error_code);
+            if(error_code){
+                reconnect_serial_connection();
+            }
+        }
+
+        if(log_type == Log_type::IS_CONEECTED){
+            _serial_port_connection.is_connected(error_code);
+            if(!error_code){
+                std::cout 
+                    << serial_port_config.name 
+                    << " is connected successfully" 
+                    << std::endl;
+            }
+            else{
+                std::cout 
+                    << serial_port_config.name 
+                    << " is not connected" 
+                    << std::endl;
+            }
         }
     }
 

@@ -26,6 +26,7 @@ public:
             for(const auto& elem : _container.get_child("serial_ports")){
                 auto prefix = "serial_ports." + elem.first;
                 result = result 
+                && elem.first == devices_info[idx].name
                 && _container.get<fs::path>(prefix +  ".log_file") == 
                     devices_info[idx].log_file 
                 && _container.get<fs::path>(prefix +  ".driver") == 

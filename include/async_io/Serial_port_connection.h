@@ -21,6 +21,15 @@ public:
     }
 
     template<typename Error_code_type>
+    void is_connected(Error_code_type& ec)
+    {
+        _serial_port->open(_device, ec);
+        if(!ec){
+            _serial_port->close(ec);
+        }
+    }
+
+    template<typename Error_code_type>
     void start_async(Error_code_type& ec)
     {
         if(_serial_port->is_open()){

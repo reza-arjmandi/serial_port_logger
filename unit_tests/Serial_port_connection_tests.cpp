@@ -403,3 +403,31 @@ Then_session_must_be_stopped_and_serial_port_closed)
 
     _logger->stop(_error_code);
 }
+
+
+TEST_F(Serial_port_connection_tests, 
+When_is_connected_is_called_\
+Then_serial_port_connection_must_be_checked_\
+case_1)
+{
+    Expectation open = EXPECT_CALL(*_serial_port, open(
+        _device, _)).Times(1);
+    Expectation check_err = EXPECT_CALL(_error_code, operator_bool()).After(
+        open).WillOnce(Return(false));
+    EXPECT_CALL(*_serial_port, close(_)).Times(1).After(check_err);
+    
+    _logger->is_connected(_error_code);
+}
+
+TEST_F(Serial_port_connection_tests, 
+When_is_connected_is_called_\
+Then_serial_port_connection_must_be_checked_\
+case_2)
+{
+    Expectation open = EXPECT_CALL(*_serial_port, open(
+        _device, _)).Times(1);
+    Expectation check_err = EXPECT_CALL(_error_code, operator_bool()).After(
+        open).WillOnce(Return(true));
+    
+    _logger->is_connected(_error_code);
+}

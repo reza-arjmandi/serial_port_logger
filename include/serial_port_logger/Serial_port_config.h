@@ -9,5 +9,6 @@ struct Serial_port_config {
     Serial_port_options_type options;
     fs::path log_file;
     fs::path driver;
+    std::string name;
 
 };
