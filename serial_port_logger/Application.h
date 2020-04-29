@@ -30,5 +30,6 @@ private:
         std::make_shared<Boost_signal_set_factory>(
             _dependency_injector.get_io_context())};
     std::vector<int> _signals {std::vector<int>({SIGINT, SIGTERM})}; 
+    Log_type _log_type;
     
 };

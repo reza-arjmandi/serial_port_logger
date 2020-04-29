@@ -29,6 +29,6 @@ if(UNIX)
         TYPE RUNTIME)
 endif()
 
-include(GoogleTest)
-gtest_discover_tests(serial_port_logger_integration_tests
-    TEST_PREFIX INTEGRATION_TEST_)
+# include(GoogleTest)
+# gtest_discover_tests(serial_port_logger_integration_tests
+#     TEST_PREFIX INTEGRATION_TEST_)

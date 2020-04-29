@@ -121,11 +121,22 @@ public:
         terminate_compass();
     }
 
+    void terminate_gps_compass()
+    {
+        terminate_gps();
+        terminate_compass();
+    }
+
     void run_logger(std::string argument = "")
     {
         generate_config_file();
         _logger.Command_line_options.config_file = _config_file;
         _logger.run(argument);
+    }
+
+    void wait_for_logger()
+    {
+        _logger.wait();
     }
 
     void generate_config_file()
@@ -324,7 +335,7 @@ Then_logger_must_print_they_are_connected_successfully)
     run_gps_compass();
     run_logger("--IS-CONNECTED");
     auto lines = read_lines_from_logger_stdout(2);
-    terminate_logger_gps_compass();
+    terminate_gps_compass();
 
     std::vector<std::string> expectedLines({
         _device1 + " is connected successfully",
@@ -332,6 +343,8 @@ Then_logger_must_print_they_are_connected_successfully)
     });
 
     ASSERT_THAT(lines, UnorderedElementsAreArray(expectedLines));
+
+    wait_for_logger();
 }
 
 
@@ -342,7 +355,6 @@ Then_logger_must_print_they_are_not_connected)
 {
     run_logger("--IS-CONNECTED");
     auto lines = read_lines_from_logger_stdout(2);
-    terminate_logger();
 
     std::vector<std::string> expectedLines({
         _device1 + " is not connected",
@@ -350,4 +362,6 @@ Then_logger_must_print_they_are_not_connected)
     });
 
     ASSERT_THAT(lines, UnorderedElementsAreArray(expectedLines));
+
+    wait_for_logger();
 }
