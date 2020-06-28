@@ -30,13 +30,20 @@ public:
 
     std::string generate_random_data()
     {
-        auto data_size {_random_generator.generate_integer(1000, 10000)};
-        return {_random_generator.generate_string(data_size)};
+        auto number_of_lines = _random_generator.generate_integer(
+            _minimum_number_of_lines, _maximum_number_of_lines);
+        std::string result;
+        for(auto i = 0; i < number_of_lines; i++) {
+            auto data_size {_random_generator.generate_integer(
+                _minimum_random_sentence_size, _maximum_random_sentence_size)};
+            result += _random_generator.generate_string(data_size) + '\n';
+        } 
+        return result;
     }
 
     void write_data(const std::string& device, std::string_view data)
     {
-        std::ofstream {device} << data << std::endl;
+        std::ofstream {device} << data;
     }
 
     std::string read_data(const fs::path& path_)
@@ -44,8 +51,9 @@ public:
         std::string line;
         std::string result;
         std::ifstream file {path_};
-        while(file >> line){
-            result += line;
+
+        while(std::getline(file, line)){
+            result += line + '\n';
         }
         return result;
     }
@@ -226,6 +234,10 @@ public:
     FS_utils _FS_utils;
     const std::string _device1 = "GPS";
     const std::string _device2 = "compass";
+    const int _minimum_random_sentence_size {5000};
+    const int _maximum_random_sentence_size {10000};
+    const int _minimum_number_of_lines {2};
+    const int _maximum_number_of_lines {10};
 
 };
 
