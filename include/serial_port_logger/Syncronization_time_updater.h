@@ -12,6 +12,13 @@ public:
         const Duration_type& update_duration):
         _update_duration {update_duration}
     {
+        _handler = 
+        [&](const auto& error_code) {
+            if(!error_code) {
+                _tag++;
+            }
+        };
+
         _timer = timer_factory->create();
         _timer->expires_from_now(_update_duration);
         _timer->async_wait(_handler);
@@ -27,6 +34,6 @@ private:
     typename Timer_factory_type::Timer_type _timer;
     std::atomic<std::size_t> _tag {0};
     Duration_type _update_duration;
-    std::function<void()> _handler = [&](){_tag += _update_duration;};
+    typename Timer_factory_type::Timer_handler_type _handler;
 
 };

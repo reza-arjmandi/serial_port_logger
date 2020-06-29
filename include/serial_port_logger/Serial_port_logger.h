@@ -1,7 +1,6 @@
 #pragma once
 
 #include "serial_port_logger/Serial_port_logger_dependency_injector.h"
-#include "serial_port_logger/File_ostream.h"
 #include "serial_port_logger/Log_type.h"
 #include "serial_port_logger/Syncronization_time_updater.h"
 
@@ -18,7 +17,7 @@ public:
     using Serial_port_connection_type = 
         Serial_port_logger_dependency_injector::Serial_port_connection_type;
     using Syncronization_time_updater_type = 
-        Serial_port_logger_dependency_injector::Serial_port_connection_type;
+        Serial_port_logger_dependency_injector::Syncronization_time_updater_type;
 
     Serial_port_logger(
         const Log_type& log_type,

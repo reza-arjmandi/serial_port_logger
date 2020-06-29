@@ -9,6 +9,7 @@
 #include <fstream>
 #include <csignal>
 #include <chrono>
+#include <atomic>
 
 namespace fs = std::filesystem;
 namespace po = boost::program_options;

@@ -5,12 +5,13 @@ typename Ostream_type,
 typename IO_read_utils_type,
 typename Error_observer_type,
 typename IO_object_type,
-typename Syncronization_time_updater_type>
+typename Sync_time_updater_type>
 class Serial_port_session {
 
 public:
 
     using Output_stream_type = Ostream_type;
+    using Syncronization_time_updater_type = Sync_time_updater_type; 
 
     Serial_port_session(
         Ostream_type& ostream,

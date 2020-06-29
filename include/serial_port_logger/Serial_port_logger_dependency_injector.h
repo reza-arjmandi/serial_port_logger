@@ -8,17 +8,20 @@
 #include "async_io/Boost_serial_port_options.h"
 #include "async_io/Async_procrastinator.h"
 #include "async_io/Boost_timer_factory.h"
+
 #include "serial_port_logger/Syncronization_time_updater.h"
+#include "serial_port_logger/File_ostream.h"
 
 class Serial_port_logger_dependency_injector {
 
 public:
 
     using Timer_factory_type = Boost_timer_factory;
+    using Millo_seconds_type = boost::posix_time::milliseconds;
     using Syncronization_time_updater_type = 
         Syncronization_time_updater<
             Timer_factory_type, 
-            std::chrono::milliseconds>; 
+            Millo_seconds_type>; 
     using Async_IO_read_utils_type  = Boost_async_IO_read_utils;
     using Serial_port_factory_type = Boost_serial_port_factory;
     using Async_procrastinator_type = 

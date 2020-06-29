@@ -225,7 +225,7 @@ public:
             lines, contents, [](char& delim){return delim == '\n';});
 
         std::vector<int> sync_tags;
-        std::regex pattern("^(\\d),.*$");
+        std::regex pattern("^(\\d*),.*$");
         
         for(const auto& line : lines) {
             std::smatch captured_match;

@@ -18,7 +18,7 @@ public:
         Boost_async_IO_read_utils& async_IO_read_utils, 
         typename Session_type_::Output_stream_type& ostream_,
         Serial_port_logger& serial_port_logger,
-        typename Serial_port_logger_dependency_injector::Syncronization_time_updater_type& syncronization_time_updater,
+        typename Session_type_::Syncronization_time_updater_type& syncronization_time_updater,
         bool enable_add_sync_tags):
             _async_IO_read_utils {async_IO_read_utils},
             _ostream {ostream_},
@@ -40,6 +40,6 @@ private:
     Boost_async_IO_read_utils& _async_IO_read_utils; 
     typename Session_type_::Output_stream_type& _ostream;
     Serial_port_logger& _serial_port_logger;
-    typename Serial_port_logger_dependency_injector::Syncronization_time_updater_type& _syncronization_time_updater;
+    typename Session_type_::Syncronization_time_updater_type& _syncronization_time_updater;
     bool _enable_add_sync_tags {false};
 };

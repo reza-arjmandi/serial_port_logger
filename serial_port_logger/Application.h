@@ -23,8 +23,7 @@ public:
     Application(
         const Log_type& log_type, 
         const fs::path& config_file, 
-        const std::chrono::milliseconds& sync_time = 
-            std::chrono::milliseconds(0));
+        unsigned long long int sync_time);
     int run();
 
 private:
@@ -37,6 +36,7 @@ private:
             _dependency_injector.get_io_context())};
     std::vector<int> _signals {std::vector<int>({SIGINT, SIGTERM})}; 
     Log_type _log_type;
-    std::shared_ptr<Syncronization_time_updater_type> _syncronization_time_updater_type;
+    std::shared_ptr<Syncronization_time_updater_type> 
+        _syncronization_time_updater;
     
 };

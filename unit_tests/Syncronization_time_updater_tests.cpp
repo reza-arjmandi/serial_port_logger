@@ -18,7 +18,7 @@ public:
         EXPECT_CALL(*_timer, expires_from_now(_update_duration)).Times(1);
 
         EXPECT_CALL(*_timer, async_wait(
-            Matcher<std::function<void()>>(_))).WillOnce(
+            Matcher<std::function<void(const Mock_error_code&)>>(_))).WillOnce(
                 SaveArg<0>(&_handler));
 
         _syncronization_time_updater = 
@@ -36,7 +36,8 @@ public:
     std::shared_ptr<Mock_timer> _timer {std::make_shared<Mock_timer>()};
     Random_generator _random_generator;
     int _update_duration {_random_generator.generate_integer(10, 1000000)};
-    std::function<void()> _handler;
+    typename Mock_timer_factory::Timer_handler_type _handler;
+    Mock_error_code _error_code;
 
 };
 
@@ -63,11 +64,28 @@ When_timer_updated_\
 Then_tag_must_be_incremented_of_duration_case1)
 {
     auto tag0 = _syncronization_time_updater->get_time_tag();
-    _handler();
+
+    EXPECT_CALL(_error_code, operator_bool()).WillOnce(Return(false));
+    _handler(_error_code);
+    
     auto tag1 = _syncronization_time_updater->get_time_tag();
 
     ASSERT_THAT(tag1, Gt(tag0));
-    ASSERT_THAT(tag1 - tag0, Eq(_update_duration));
+    ASSERT_THAT(tag1 - tag0, Eq(1));
+}
+
+TEST_F(Syncronization_time_updater_tests, 
+When_timer_got_and_error_\
+Then_tag_must_be_unchanged)
+{
+    auto tag0 = _syncronization_time_updater->get_time_tag();
+
+    EXPECT_CALL(_error_code, operator_bool()).WillOnce(Return(true));
+    _handler(_error_code);
+    
+    auto tag1 = _syncronization_time_updater->get_time_tag();
+
+    ASSERT_THAT(tag1, Eq(tag0));
 }
 
 TEST_F(Syncronization_time_updater_tests, 
@@ -75,17 +93,21 @@ When_timer_updated_\
 Then_tag_must_be_incremented_of_duration_case2)
 {
     auto tag0 = _syncronization_time_updater->get_time_tag();
-    _handler();
+
+    EXPECT_CALL(_error_code, operator_bool()).WillOnce(Return(false));
+    _handler(_error_code);
+
     auto tag1 = _syncronization_time_updater->get_time_tag();
 
     auto number_of_call = _random_generator.generate_integer(10, 100);
     for(auto i = 0; i < number_of_call; i++) {
-        _handler();
+        EXPECT_CALL(_error_code, operator_bool()).WillOnce(Return(false));
+        _handler(_error_code);
     }
 
     auto tag2 = _syncronization_time_updater->get_time_tag();
 
     ASSERT_THAT(tag1, Gt(tag0));
-    ASSERT_THAT(tag1 - tag0, Eq(_update_duration));
-    ASSERT_THAT((tag2 - tag1) % _update_duration, Eq(0));
+    ASSERT_THAT(tag1 - tag0, Eq(1));
+    ASSERT_THAT(tag2 - tag1, Eq(number_of_call));
 }

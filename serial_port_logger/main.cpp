@@ -18,7 +18,7 @@ int main(int argc, char ** argv)
                 ("CONFIG_FILE", po::value<fs::path>(), 
                 "set the json config file")
                 ("IS-CONNECTED", "check serial port connection")
-                ("SYNC-EVERY", po::value<std::chrono::milliseconds>(), 
+                ("SYNC-EVERY", po::value<unsigned long long int>(), 
                 "set synchronization time in milli seconds");
         auto variable_maps {po::variables_map()};
         po::store(po::parse_command_line(argc, argv, descriptions), 
@@ -40,10 +40,10 @@ int main(int argc, char ** argv)
                 log_type = Log_type::IS_CONEECTED;
         }
 
-        std::chrono::milliseconds sync_time = std::chrono::milliseconds(0);
+        unsigned long long int sync_time = {0};
         if(variable_maps.count("SYNC-EVERY")) {
-                sync_time = variable_maps[
-                        "SYNC-EVERY"].as<std::chrono::milliseconds>();
+                sync_time = 
+                        variable_maps["SYNC-EVERY"].as<unsigned long long int>();
         }
 
         Application app {
