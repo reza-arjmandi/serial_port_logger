@@ -217,6 +217,37 @@ public:
         assert_report_file_equal_to_data_which_is_written_to_compass();
     }
 
+    std::vector<int> extract_sync_tags(const fs::path& file)
+    {
+        auto contents = read_data(file);
+        std::vector<std::string> lines;
+        boost::algorithm::split(
+            lines, contents, [](char& delim){return delim == '\n';});
+
+        std::vector<int> sync_tags;
+        std::regex pattern("^(\\d),.*$");
+        
+        for(const auto& line : lines) {
+            std::smatch captured_match;
+            if(std::regex_match(line, captured_match, pattern)) {
+                sync_tags.push_back(
+                    std::atoi(captured_match[1].str().c_str()));
+            }
+        }
+
+        return sync_tags;
+    }
+
+    void 
+        assert_report_files_has_sync_tags_and_equal_to_data_which_is_written_to_gps_and_compass()
+    {
+        auto gps_sync_tags = extract_sync_tags(_gps_report_file);
+        auto compass_sync_tags = extract_sync_tags(_compass_report_file);
+
+        ASSERT_THAT(gps_sync_tags.empty(), Not(true));
+        ASSERT_THAT(compass_sync_tags.empty(), Not(true));
+    }
+
     Logger _logger;
     Virtual_serial_port _gps_virtual_port;
     Virtual_serial_port _compass_virtual_port;
@@ -238,6 +269,7 @@ public:
     const int _maximum_random_sentence_size {10000};
     const int _minimum_number_of_lines {2};
     const int _maximum_number_of_lines {10};
+    const int _sync_every_param {_random_generator.generate_integer(10, 5000)};
 
 };
 
@@ -376,4 +408,17 @@ Then_logger_must_print_they_are_not_connected)
     ASSERT_THAT(lines, UnorderedElementsAreArray(expectedLines));
 
     wait_for_logger();
+}
+
+TEST_F(serial_port_logger_tests, 
+When_logger_is_run_with_SYNC_EVERY_argument_\
+Then_logger_must_tag_every_sentene_with_time_label)
+{
+    run_gps_compass();
+    auto cmd_params = "--SYNC-EVERY=" + std::to_string(_sync_every_param);
+    run_logger(cmd_params);
+    write_data_to_gps_and_compass();
+    wait_for_log();
+    terminate_logger_gps_compass();
+    assert_report_files_has_sync_tags_and_equal_to_data_which_is_written_to_gps_and_compass();
 }

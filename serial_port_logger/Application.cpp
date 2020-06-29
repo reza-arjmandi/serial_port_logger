@@ -1,13 +1,24 @@
 #include "Application.h"
 
-Application::Application(const Log_type& log_type, const fs::path& config_file)
+Application::Application(
+    const Log_type& log_type, 
+    const fs::path& config_file, 
+    const std::chrono::milliseconds& sync_time)
     : _log_type {log_type}
 {
     auto configs {_config_file_parser.get_devices_info(config_file)};
     _serial_port_loggers.reserve(configs.size());
     for(const auto& config : configs) {
+        auto enable_add_sync_tag {false};
+        if(sync_time != std::chrono::milliseconds(0)) {
+            _syncronization_time_updater_type = 
+                std::make_shared<
+                Syncronization_time_updater_type>(
+                    _dependency_injector.get_timer_factory(), sync_time);
+        }
         _serial_port_loggers.emplace_back(
-            log_type, config, _dependency_injector);
+            log_type, config, _dependency_injector, 
+            *_syncronization_time_updater_type, enable_add_sync_tag);
     }
 }
 

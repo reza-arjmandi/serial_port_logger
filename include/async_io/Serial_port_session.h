@@ -4,7 +4,8 @@ template<
 typename Ostream_type,
 typename IO_read_utils_type,
 typename Error_observer_type,
-typename IO_object_type>
+typename IO_object_type,
+typename Syncronization_time_updater_type>
 class Serial_port_session {
 
 public:
@@ -15,11 +16,15 @@ public:
         Ostream_type& ostream,
         IO_read_utils_type& IO_read_utils,
         std::shared_ptr<IO_object_type> IO_object,
-        Error_observer_type& observer):
+        Error_observer_type& observer,
+        Syncronization_time_updater_type& sync_time_updater,
+        bool enable_add_sync_tags):
         _ostream {ostream},
         _IO_read_utils {IO_read_utils},
         _IO_object {IO_object},
-        _error_observer {observer}
+        _error_observer {observer},
+        _sync_time_updater {sync_time_updater},
+        _enable_add_sync_tags {enable_add_sync_tags}
     {
     }
 
@@ -53,7 +58,15 @@ private:
                     _error_observer.notify_error(ec);
                     return;
                 }
-                _ostream << _buffer_str;
+                if(_enable_add_sync_tags) {
+                    _ostream 
+                        << _sync_time_updater.get_time_tag() 
+                        << std::string(",") 
+                        << _buffer_str;
+                }
+                else {
+                    _ostream << _buffer_str;
+                }
                 async_read();
             });
     }
@@ -64,5 +77,7 @@ private:
     std::shared_ptr<IO_object_type> _IO_object;
     std::string _buffer_str;
     bool _start {false};
+    Syncronization_time_updater_type& _sync_time_updater;
+    bool _enable_add_sync_tags {false};
 
 };

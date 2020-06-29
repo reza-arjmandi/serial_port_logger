@@ -9,7 +9,8 @@ set(cpp_files
     Serial_port_connection_tests.cpp
     Serial_port_session_tests.cpp
     Async_procrastinator_tests.cpp
-    Signals_handler_tests.cpp)
+    Signals_handler_tests.cpp
+    Syncronization_time_updater_tests.cpp)
 
 add_executable(serial_port_logger_unit_tests ${cpp_files})
 target_include_directories(serial_port_logger_unit_tests PUBLIC

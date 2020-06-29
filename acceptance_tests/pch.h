@@ -9,6 +9,8 @@
 #include <filesystem>
 #include <fstream>
 #include <string_view>
+#include <regex>
+#include <iterator>
 
 #include <boost/process.hpp>
 #include <boost/asio.hpp>

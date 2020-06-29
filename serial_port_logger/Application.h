@@ -17,8 +17,14 @@ public:
             Boost_signal_set_factory, 
             Serial_port_logger, 
             Serial_port_logger_dependency_injector::IO_context_type>;
+    using Syncronization_time_updater_type = 
+        Serial_port_logger_dependency_injector::Syncronization_time_updater_type;
 
-    Application(const Log_type& log_type, const fs::path& config_file);
+    Application(
+        const Log_type& log_type, 
+        const fs::path& config_file, 
+        const std::chrono::milliseconds& sync_time = 
+            std::chrono::milliseconds(0));
     int run();
 
 private:
@@ -31,5 +37,6 @@ private:
             _dependency_injector.get_io_context())};
     std::vector<int> _signals {std::vector<int>({SIGINT, SIGTERM})}; 
     Log_type _log_type;
+    std::shared_ptr<Syncronization_time_updater_type> _syncronization_time_updater_type;
     
 };
