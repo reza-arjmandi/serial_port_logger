@@ -8,16 +8,16 @@ Application::Application(
 {
     auto configs {_config_file_parser.get_devices_info(config_file)};
     _serial_port_loggers.reserve(configs.size());
+    bool enable_add_sync_tag {false};
+    if(sync_time != 0) {
+        _syncronization_time_updater = 
+            std::make_shared<
+            Syncronization_time_updater_type>(
+                _dependency_injector.get_timer_factory(), 
+                boost::posix_time::milliseconds(sync_time));
+        enable_add_sync_tag = true;
+    }
     for(const auto& config : configs) {
-        bool enable_add_sync_tag {false};
-        if(sync_time != 0) {
-            _syncronization_time_updater = 
-                std::make_shared<
-                Syncronization_time_updater_type>(
-                    _dependency_injector.get_timer_factory(), 
-                    boost::posix_time::milliseconds(sync_time));
-            enable_add_sync_tag = true;
-        }
         _serial_port_loggers.emplace_back(
             log_type, config, _dependency_injector, 
             *_syncronization_time_updater, enable_add_sync_tag);
