@@ -14,14 +14,15 @@ public:
     {
         _handler = 
         [&](const auto& error_code) {
-            if(!error_code) {
-                _tag++;
+            if(error_code) {
+                return;
             }
+            _tag++;
+            set_timer();
         };
 
         _timer = timer_factory->create();
-        _timer->expires_from_now(_update_duration);
-        _timer->async_wait(_handler);
+        set_timer();
     }
 
     std::size_t get_time_tag() const
@@ -31,8 +32,14 @@ public:
 
 private:
 
+    void set_timer()
+    {
+        _timer->expires_from_now(_update_duration);
+        _timer->async_wait(_handler);
+    }
+
     typename Timer_factory_type::Timer_type _timer;
-    std::atomic<std::size_t> _tag {0};
+    std::atomic<std::size_t> _tag = 0;
     Duration_type _update_duration;
     typename Timer_factory_type::Timer_handler_type _handler;
 

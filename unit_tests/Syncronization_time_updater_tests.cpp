@@ -15,8 +15,8 @@ public:
     void SetUp() override
     {
         EXPECT_CALL(*_timer_factory, create()).WillOnce(Return(_timer));
-        EXPECT_CALL(*_timer, expires_from_now(_update_duration)).Times(1);
 
+        EXPECT_CALL(*_timer, expires_from_now(_update_duration)).Times(1);
         EXPECT_CALL(*_timer, async_wait(
             Matcher<std::function<void(const Mock_error_code&)>>(_))).WillOnce(
                 SaveArg<0>(&_handler));
@@ -66,6 +66,10 @@ Then_tag_must_be_incremented_of_duration_case1)
     auto tag0 = _syncronization_time_updater->get_time_tag();
 
     EXPECT_CALL(_error_code, operator_bool()).WillOnce(Return(false));
+
+    EXPECT_CALL(*_timer, expires_from_now(_update_duration)).Times(1);
+    EXPECT_CALL(*_timer, async_wait(
+        Matcher<std::function<void(const Mock_error_code&)>>(_))).Times(1);
     _handler(_error_code);
     
     auto tag1 = _syncronization_time_updater->get_time_tag();
@@ -95,6 +99,9 @@ Then_tag_must_be_incremented_of_duration_case2)
     auto tag0 = _syncronization_time_updater->get_time_tag();
 
     EXPECT_CALL(_error_code, operator_bool()).WillOnce(Return(false));
+    EXPECT_CALL(*_timer, expires_from_now(_update_duration)).Times(1);
+    EXPECT_CALL(*_timer, async_wait(
+        Matcher<std::function<void(const Mock_error_code&)>>(_))).Times(1);
     _handler(_error_code);
 
     auto tag1 = _syncronization_time_updater->get_time_tag();
@@ -102,6 +109,10 @@ Then_tag_must_be_incremented_of_duration_case2)
     auto number_of_call = _random_generator.generate_integer(10, 100);
     for(auto i = 0; i < number_of_call; i++) {
         EXPECT_CALL(_error_code, operator_bool()).WillOnce(Return(false));
+        EXPECT_CALL(*_timer, expires_from_now(_update_duration)).Times(1);
+        EXPECT_CALL(*_timer, async_wait(
+            Matcher<std::function<void(const Mock_error_code&)>>(_))).WillOnce(
+                SaveArg<0>(&_handler));
         _handler(_error_code);
     }
 
