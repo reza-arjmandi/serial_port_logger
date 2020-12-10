@@ -1,33 +1,34 @@
 #pragma once
 
 #include "serial_port_logger/Serial_port_logger_dependency_injector.h"
-#include "serial_port_logger/File_ostream.h"
+#include "serial_port_logger/Log_type.h"
+#include "serial_port_logger/Syncronization_time_updater.h"
 
 class Serial_port_logger {
 
 public:
 
-    using Session_type = Serial_port_session<
-        File_ostream, 
-        Serial_port_logger_dependency_injector::Async_IO_read_utils_type, 
-        Serial_port_logger,
-        Serial_port_logger_dependency_injector::Serial_port_type>;
-    using Session_factory_type = 
-        Serial_port_session_factory<Session_type>;
-    using Serial_port_connection_type = Serial_port_connection<
-        Serial_port_logger_dependency_injector::Serial_port_factory_type, 
-        Session_factory_type>;
     using Error_type = Serial_port_logger_dependency_injector::Error_code_type;
     using Seconds_type = Serial_port_logger_dependency_injector::Seconds_type;
     using Async_procrastinator_type = 
         Serial_port_logger_dependency_injector::Async_procrastinator_type;
+    using Session_factory_type = 
+        Serial_port_logger_dependency_injector::Session_factory_type;
+    using Serial_port_connection_type = 
+        Serial_port_logger_dependency_injector::Serial_port_connection_type;
+    using Syncronization_time_updater_type = 
+        Serial_port_logger_dependency_injector::Syncronization_time_updater_type;
 
     Serial_port_logger(
+        const Log_type& log_type,
         const Serial_port_config& serial_port_config,
-        Serial_port_logger_dependency_injector& dependency_injector)
+        Serial_port_logger_dependency_injector& dependency_injector,
+        Syncronization_time_updater_type& sync_time_updater,
+        bool enable_add_sync_tag)
         : _log_file {serial_port_config.log_file}
          , _session_factory {
-             dependency_injector.get_async_IO_read_utils(), _log_file, *this}
+             dependency_injector.get_async_IO_read_utils(), _log_file, *this, 
+             sync_time_updater, enable_add_sync_tag}
          , _serial_port_connection {
              serial_port_config.driver, 
              dependency_injector.get_serial_port_factory(), 
@@ -37,9 +38,27 @@ public:
             dependency_injector.get_async_procrastinator()}
     {
         boost::system::error_code error_code;
-        _serial_port_connection.start_async(error_code);
-        if(error_code){
-            reconnect_serial_connection();
+        if(log_type == Log_type::LOG_DATA_TO_FILE){
+            _serial_port_connection.start_async(error_code);
+            if(error_code){
+                reconnect_serial_connection();
+            }
+        }
+
+        if(log_type == Log_type::IS_CONEECTED){
+            _serial_port_connection.is_connected(error_code);
+            if(!error_code){
+                std::cout 
+                    << serial_port_config.name 
+                    << " is connected successfully" 
+                    << std::endl;
+            }
+            else{
+                std::cout 
+                    << serial_port_config.name 
+                    << " is not connected" 
+                    << std::endl;
+            }
         }
     }
 

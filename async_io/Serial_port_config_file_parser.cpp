@@ -10,7 +10,8 @@ std::vector<Serial_port_config>
     std::vector<Serial_port_config> result;
     for(const auto& elem : _container.get_child("serial_ports")){
         Serial_port_config device_info;
-        auto prefix = "serial_ports." + elem.first;
+        device_info.name = elem.first;
+        auto prefix = "serial_ports." + device_info.name;
         device_info.log_file = 
             _container.get<fs::path>(prefix +  ".log_file");
         device_info.driver = 

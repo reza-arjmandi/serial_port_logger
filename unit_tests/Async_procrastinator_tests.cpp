@@ -34,7 +34,9 @@ When_postpone_is_called_then_an_async_timer_must_be_created_and_initiated)
     std::shared_ptr<std::function<void()>> handler = 
         std::make_shared<std::function<void()>>([](){});
     EXPECT_CALL(*_timer, expires_from_now(duration)).Times(1);
-    EXPECT_CALL(*_timer, async_wait(Eq(handler))).Times(1);
+    EXPECT_CALL(*_timer, async_wait(
+        Matcher<std::shared_ptr<std::function<void()>>>(Eq(handler)))).Times(
+            1);
 
     _async_procrastinator->postpone(handler, 10);
 }

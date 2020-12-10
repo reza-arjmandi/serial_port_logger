@@ -5,6 +5,8 @@ class Boost_timer_factory {
 public:
 
     using Timer_type = std::shared_ptr<boost::asio::deadline_timer>;
+    using Timer_handler_type = 
+        std::function<void(const boost::system::error_code& error)>;
 
     Boost_timer_factory(boost::asio::io_context& io_context_):
         _io_context {io_context_}

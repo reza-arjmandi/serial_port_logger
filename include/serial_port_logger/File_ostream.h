@@ -15,6 +15,12 @@ public:
         return *this;
     }
 
+    File_ostream& operator<<(const std::size_t& data)
+    {
+        *_file << data;
+        return *this;
+    }
+
     void close()
     {
         _file->close();

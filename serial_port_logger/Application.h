@@ -3,6 +3,7 @@
 #include "serial_port_logger/Serial_port_config_file_parser.h"
 #include "serial_port_logger/Serial_port_logger.h"
 #include "serial_port_logger/Serial_port_logger_dependency_injector.h"
+#include "serial_port_logger/Log_type.h"
 
 #include "async_io/Boost_signal_set_factory.h"
 #include "async_io/Signals_handler.h"
@@ -16,8 +17,13 @@ public:
             Boost_signal_set_factory, 
             Serial_port_logger, 
             Serial_port_logger_dependency_injector::IO_context_type>;
+    using Syncronization_time_updater_type = 
+        Serial_port_logger_dependency_injector::Syncronization_time_updater_type;
 
-    Application(const fs::path& config_file);
+    Application(
+        const Log_type& log_type, 
+        const fs::path& config_file, 
+        unsigned long long int sync_time);
     int run();
 
 private:
@@ -29,5 +35,8 @@ private:
         std::make_shared<Boost_signal_set_factory>(
             _dependency_injector.get_io_context())};
     std::vector<int> _signals {std::vector<int>({SIGINT, SIGTERM})}; 
+    Log_type _log_type;
+    std::shared_ptr<Syncronization_time_updater_type> 
+        _syncronization_time_updater;
     
 };
